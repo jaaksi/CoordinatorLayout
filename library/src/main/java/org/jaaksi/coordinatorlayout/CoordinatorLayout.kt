@@ -58,7 +58,7 @@ fun CoordinatorLayout(
                             val remain = with(flingBehavior) {
                                 performFling(initialVelocity)
                             }
-                            // 外层响应Fling后，剩余的交给nestedScrollableState来处理
+                            // scrollable消费Fling后，剩余的交给nestedScrollableState来处理
                             if (remain < 0 && nestedScrollableState() != null) { // 向上滑动，剩余的Fling交给nestedScrollableState消费
                                 nestedScrollableState()!!.scroll {
                                     with(flingBehavior){
@@ -97,9 +97,9 @@ fun CoordinatorLayout(
             (collapsablePlaceable.height - safeNonCollapsableHeight).toFloat().coerceAtLeast(0f)
         layout(constraints.maxWidth, height) {
             val collapsedHeight = state.collapsedHeight.roundToInt()
-            nestedScrollPlaceable.placeRelative(0, collapsableContentHeight + pinContentHeight - collapsedHeight)
             collapsablePlaceable.placeRelative(0, -collapsedHeight)
             pinPlaceable?.placeRelative(0, collapsableContentHeight - collapsedHeight)
+            nestedScrollPlaceable.placeRelative(0, collapsableContentHeight + pinContentHeight - collapsedHeight)
         }
     }
 }
