@@ -51,8 +51,9 @@ fun AppNavHost() {
                     0 -> SimpleScreen1()
                     1 -> SimpleScreen2()
                     2 -> SimpleScreen3()
-                    3 -> SimpleScreen4()
-                    4 -> SimpleScreen5()
+                    3 -> SimpleScreen6()
+                    4 -> SimpleScreen4()
+                    5 -> SimpleScreen5()
                 }
             }
         }

@@ -3,6 +3,7 @@ Compose实现的CoordinatorLayout，实现了AppBarLayout、CollapsingToolbarLay
 
 ## Screenshot
 ![](https://github.com/jaaksi/CoordinatorLayout/blob/master/docs/demo1.gif)
+![](https://github.com/jaaksi/CoordinatorLayout/blob/master/docs/demo6.gif)
 ![](https://github.com/jaaksi/CoordinatorLayout/blob/master/docs/demo2.gif)
 
 ## Structure
