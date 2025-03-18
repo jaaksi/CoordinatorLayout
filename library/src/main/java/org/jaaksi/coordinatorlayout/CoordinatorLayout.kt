@@ -51,6 +51,7 @@ fun CoordinatorLayout(
             .scrollable(
                 state = state.scrollableState,
                 orientation = Orientation.Vertical,
+                enabled = !state.isFullyCollapsed,
                 flingBehavior = remember {
                     object : FlingBehavior {
                         override suspend fun ScrollScope.performFling(initialVelocity: Float): Float {
