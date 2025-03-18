@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -24,14 +25,12 @@ fun rememberCoordinatorState(): CoordinatorState {
 
 @Stable
 class CoordinatorState {
-    private var _collapsedHeight: Float by mutableFloatStateOf(0f)
-
     // 已折叠的高度
-    val collapsedHeight: Float
-        get() = _collapsedHeight
+    var collapsedHeight: Float by mutableFloatStateOf(0f)
+        private set
 
-    val isFullyCollapsed: Boolean
-        get() = collapsedHeight == maxCollapsableHeight
+    var isFullyCollapsed by mutableStateOf(false)
+        private set
 
     private var _maxCollapsableHeight = mutableFloatStateOf(Float.MAX_VALUE)
 
@@ -42,17 +41,21 @@ class CoordinatorState {
             if (value.isNaN()) return
             _maxCollapsableHeight.floatValue = value
             Snapshot.withoutReadObservation {
-                if (_collapsedHeight > value) {
-                    _collapsedHeight = value
+                if (collapsedHeight >= value) {
+                    collapsedHeight = value
+                    isFullyCollapsed = true
+                } else if (isFullyCollapsed){
+                    collapsedHeight = value
                 }
             }
 
         }
 
     val scrollableState = ScrollableState { // 向上滑动，为负的，
-        val newValue = (_collapsedHeight - it).coerceIn(0f, maxCollapsableHeight)
-        val consumed = _collapsedHeight - newValue
-        _collapsedHeight = newValue
+        val newValue = (collapsedHeight - it).coerceIn(0f, maxCollapsableHeight)
+        val consumed = collapsedHeight - newValue
+        collapsedHeight = newValue
+        isFullyCollapsed = newValue == maxCollapsableHeight
         consumed
     }
 
@@ -86,7 +89,7 @@ class CoordinatorState {
             // 水平方向不消耗
             if (available.x != 0f) return Offset.Zero
             // 向上滑动，如果没有达到最大可折叠高度，则自己先消耗
-            if (available.y < 0 && _collapsedHeight < maxCollapsableHeight) {
+            if (available.y < 0 && collapsedHeight < maxCollapsableHeight) {
                 return consume(available)
             }
 
@@ -107,11 +110,12 @@ class CoordinatorState {
 
     companion object {
         val Saver: Saver<CoordinatorState, *> = Saver(
-            save = { listOf(it._collapsedHeight, it.maxCollapsableHeight) },
+            save = { listOf(it.collapsedHeight, it.maxCollapsableHeight) },
             restore = {
                 CoordinatorState().apply {
-                    _collapsedHeight = it[0]
+                    collapsedHeight = it[0]
                     maxCollapsableHeight = it[1]
+                    isFullyCollapsed = collapsedHeight >= maxCollapsableHeight
                 }
             }
         )
