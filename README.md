@@ -16,7 +16,7 @@ Compose实现的CoordinatorLayout，实现了AppBarLayout、CollapsingToolbarLay
 ```kotlin
 // collapsable + pin + LazyColumn
 @Composable
-fun SimpleScreen2() {
+fun SimpleScreen() {
     Column(
         Modifier
             .fillMaxSize()
@@ -27,6 +27,7 @@ fun SimpleScreen2() {
         val lazyListState = rememberLazyListState()
         val coordinatorState = rememberCoordinatorState()
         var uiState by remember { mutableStateOf(DemoState()) }
+        var hasRecent by remember { mutableStateOf(false) }
 
         Box(
             modifier = Modifier
@@ -36,6 +37,8 @@ fun SimpleScreen2() {
             contentAlignment = Alignment.CenterStart
         ) {
             DemoTitle()
+
+            Button(onClick = { hasRecent = !hasRecent }, modifier = Modifier.align(Alignment.CenterEnd)) { }
         }
 
         HorizontalDivider(color = AppColors.Divider)
@@ -45,16 +48,19 @@ fun SimpleScreen2() {
             state = coordinatorState,
             modifier = Modifier.fillMaxSize(),
             collapsableContent = {
-                Column(Modifier.fillMaxWidth()) {
-                    Image(
-                        painter = painterResource(id = R.mipmap.img_1),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.FillWidth
-                    )
+                Column {
+                    if (hasRecent) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp)
+                            .background(AppColors.Theme))
+                    }
+                    TopCard()
                 }
+
             },
-            pinContent = {
+        ) {
+            Column(Modifier.fillMaxSize()) {
                 TabBar(
                     tabList = uiState.tabList,
                     selectedTabIndex = uiState.selectedTab,
@@ -66,32 +72,33 @@ fun SimpleScreen2() {
                     }
 
                 }
-            },
-        ) {
-            LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
-                items(30) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .padding(horizontal = 15.dp),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Text(
-                            text = "Item $it",
-                            textAlign = TextAlign.Center,
+                LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
+                    items(30) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .padding(horizontal = 15.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Text(
+                                text = "Item $it",
+                                textAlign = TextAlign.Center,
 
+                                )
+                            HorizontalDivider(
+                                thickness = 0.7.dp,
+                                color = AppColors.Divider,
+                                modifier = Modifier.align(Alignment.BottomStart)
                             )
-                        HorizontalDivider(
-                            thickness = 0.7.dp,
-                            color = AppColors.Divider,
-                            modifier = Modifier.align(Alignment.BottomStart)
-                        )
 
+                        }
                     }
+
                 }
 
             }
+
         }
     }
 
