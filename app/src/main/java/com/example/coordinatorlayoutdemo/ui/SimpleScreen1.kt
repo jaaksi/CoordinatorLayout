@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.coordinatorlayoutdemo.ui.theme.AppColors
+import com.example.coordinatorlayoutdemo.widget.TopCard
 import org.jaaksi.coordinatorlayout.CoordinatorLayout
 import org.jaaksi.coordinatorlayout.rememberCoordinatorState
 
@@ -54,7 +55,7 @@ fun SimpleScreen1() {
             state = coordinatorState,
             modifier = Modifier.fillMaxSize(),
             collapsableContent = {
-                com.example.coordinatorlayoutdemo.widget.TopCard()
+                TopCard()
             },
         ) {
             LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {

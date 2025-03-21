@@ -86,7 +86,8 @@ fun SimpleScreen4() {
             collapsableContent = {
                 TopCard()
             },
-            pinContent = {
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 val titleHeight = with(LocalDensity.current) { 40.dp.roundToPx() }
                 HomeTabBar(uiState) {
                     uiState = uiState.copy(selectedTab = it, fromTabClick = true)
@@ -98,15 +99,15 @@ fun SimpleScreen4() {
                         )
                     }
                 }
-            },
-        ) {
-            BottomList(
-                uiStateGetter = { uiState },
-                lazyListState = lazyListState,
-            ) {
-                uiState = uiState.copy(selectedTab = it, fromTabClick = false)
+                BottomList(
+                    uiStateGetter = { uiState },
+                    lazyListState = lazyListState,
+                ) {
+                    uiState = uiState.copy(selectedTab = it, fromTabClick = false)
 
+                }
             }
+
         }
     }
 

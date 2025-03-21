@@ -51,7 +51,7 @@ class CoordinatorState {
 
         }
 
-    val scrollableState = ScrollableState { // 向上滑动，为负的，
+    val scrollableState = ScrollableState {
         val newValue = (collapsedHeight - it).coerceIn(0f, maxCollapsableHeight)
         val consumed = collapsedHeight - newValue
         collapsedHeight = newValue
@@ -66,14 +66,22 @@ class CoordinatorState {
             easing = LinearEasing
         )
     ) {
-        animateScrollBy(-(maxCollapsableHeight - collapsedHeight), animationSpec)
+        animateScrollBy(collapsedHeight - maxCollapsableHeight, animationSpec)
     }
 
-    suspend fun animateScrollBy(
-        value: Float, animationSpec: AnimationSpec<Float> = tween(
-            100,
-            easing = LinearEasing
-        )
+    /**
+     * @param value 折叠的高度
+     */
+    suspend fun animateTo(
+        value: Float,
+        animationSpec: AnimationSpec<Float> = tween(100, easing = LinearEasing)
+    ) {
+        animateScrollBy((value - maxCollapsableHeight).coerceIn(0f, maxCollapsableHeight), animationSpec)
+    }
+
+    private suspend fun animateScrollBy(
+        value: Float,
+        animationSpec: AnimationSpec<Float> = tween(100, easing = LinearEasing)
     ) {
         scrollableState.animateScrollBy(value, animationSpec)
     }

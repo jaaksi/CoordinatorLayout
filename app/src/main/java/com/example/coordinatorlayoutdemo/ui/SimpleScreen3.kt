@@ -64,7 +64,8 @@ fun SimpleScreen3() {
                     TopCard()
                 },
                 nonCollapsableHeight = nonCollapsableHeight,
-                pinContent = {
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
                     TabBar(
                         tabList = uiState.tabList,
                         selectedTabIndex = uiState.selectedTab,
@@ -76,32 +77,32 @@ fun SimpleScreen3() {
                         }
 
                     }
-                },
-            ) {
-                LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
-                    items(30) {
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(50.dp)
-                                .padding(horizontal = 15.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Text(
-                                text = "Item $it",
-                                textAlign = TextAlign.Center,
+                    LazyColumn(Modifier.fillMaxSize(), state = lazyListState) {
+                        items(30) {
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .padding(horizontal = 15.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                Text(
+                                    text = "Item $it",
+                                    textAlign = TextAlign.Center,
 
+                                    )
+                                HorizontalDivider(
+                                    thickness = 0.7.dp,
+                                    color = AppColors.Divider,
+                                    modifier = Modifier.align(Alignment.BottomStart)
                                 )
-                            HorizontalDivider(
-                                thickness = 0.7.dp,
-                                color = AppColors.Divider,
-                                modifier = Modifier.align(Alignment.BottomStart)
-                            )
 
+                            }
                         }
-                    }
 
+                    }
                 }
+
             }
 
             Box(

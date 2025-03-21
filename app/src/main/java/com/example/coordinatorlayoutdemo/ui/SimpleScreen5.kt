@@ -81,7 +81,8 @@ fun SimpleScreen5() {
             collapsableContent = {
                 TopCard()
             },
-            pinContent = {
+        ) {
+            Column(Modifier.fillMaxSize()) {
                 TabBar(
                     tabList = list,
                     selectedTabIndex = pagerState.currentPage,
@@ -94,9 +95,6 @@ fun SimpleScreen5() {
                     }
 
                 }
-            },
-        ) {
-            Column(Modifier.fillMaxSize()) {
                 val scrollState = rememberScrollState()
                 val lazyGridState = rememberLazyGridState()
                 LaunchedEffect(pagerState) {
