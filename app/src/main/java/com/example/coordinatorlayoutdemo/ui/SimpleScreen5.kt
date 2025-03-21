@@ -72,7 +72,7 @@ fun SimpleScreen5() {
         val lazyListState = rememberLazyListState()
         val coordinatorState = rememberCoordinatorState()
         // var contentScrollableState by remember { mutableStateOf<ScrollableState?>(lazyListState) }
-        var contentScrollableState: ScrollableState? = remember { lazyListState }
+        var contentScrollableState: ScrollableState = remember { lazyListState }
         val pagerState = rememberPagerState { list.size }
         CoordinatorLayout(
             nestedScrollableState = { contentScrollableState },
@@ -103,8 +103,7 @@ fun SimpleScreen5() {
                             contentScrollableState = when (it) {
                                 0 -> lazyListState
                                 1 -> lazyGridState
-                                2 -> scrollState
-                                else -> null
+                                else -> scrollState
                             }
                         }
                 }
@@ -150,7 +149,9 @@ fun SimpleScreen5() {
                         }
 
                         else -> {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Box(Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState), contentAlignment = Alignment.Center) {
                                 Text(
                                     text = list[page].getTabName(),
                                     style = TextStyle.Default.copy(

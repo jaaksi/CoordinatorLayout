@@ -20,12 +20,12 @@ import kotlin.math.roundToInt
  * @param collapsableContent 可折叠的Content
  * @param content 底部的Content
  * @param nonCollapsableHeight 不允许折叠的高度，至少为0
- * @param nestedScrollableState 用于collapsableContent快速滑动，完全折叠后，剩余Fling交给content来响应。如果不设置，完全折叠后，content不能响应剩余Fling
+ * @param nestedScrollableState
  *
  */
 @Composable
 fun CoordinatorLayout(
-    nestedScrollableState: () -> ScrollableState?,
+    nestedScrollableState: () -> ScrollableState,
     collapsableContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     state: CoordinatorState = rememberCoordinatorState(),
@@ -54,9 +54,8 @@ fun CoordinatorLayout(
                             val remain = with(flingBehavior) {
                                 performFling(initialVelocity)
                             }
-                            // scrollable消费Fling后，剩余的交给nestedScrollableState来处理
-                            if (remain < 0 && nestedScrollableState() != null) { // 向上滑动，剩余的Fling交给nestedScrollableState消费
-                                nestedScrollableState()!!.scroll {
+                            if (remain < 0) { // 向上滑动，scrollable消费Fling后，剩余的Fling交给nestedScrollableState消费
+                                nestedScrollableState().scroll {
                                     with(flingBehavior){
                                         performFling(-remain)
                                     }
