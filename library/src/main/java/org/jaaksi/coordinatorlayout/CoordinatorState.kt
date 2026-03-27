@@ -1,7 +1,10 @@
 package org.jaaksi.coordinatorlayout
 
 import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateDecay
+import androidx.compose.animation.core.exponentialDecay
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -17,6 +20,8 @@ import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.unit.Velocity
+import kotlin.math.abs
 
 @Composable
 fun rememberCoordinatorState(): CoordinatorState {
@@ -113,6 +118,29 @@ class CoordinatorState {
                 return consume(available)
             }
             return Offset.Zero
+        }
+
+        // 新版 Compose 1.7+中，子控件fling到达边界后剩余速度通过 onPostFling 分发，不再通过 onPostScroll 逐帧传递 delta
+        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+            // 用剩余速度来展开折叠区域
+            if (available.y > 0f && collapsedHeight > 0f) {
+                scrollableState.scroll {
+                    var lastValue = 0f
+                    AnimationState(
+                        initialValue = 0f,
+                        initialVelocity = available.y
+                    ).animateDecay(exponentialDecay()) {
+                        val delta = value - lastValue
+                        lastValue = value
+                        val consumedScroll = scrollBy(delta)
+                        if (abs(delta) > 0.5f && abs(consumedScroll) < 0.5f) {
+                            cancelAnimation()
+                        }
+                    }
+                }
+                return available
+            }
+            return Velocity.Zero
         }
     }
 
